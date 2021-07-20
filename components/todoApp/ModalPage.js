@@ -35,7 +35,8 @@ export default function ModalPage({ modalVisible, callBack, onSubmit }) {
                 style={styles.input}
                 onChangeText={(value) => setTitle(value)}
                 value={title}
-                keyboardType="text"
+                numberOfLines={10}
+                multiline={true}
               />
             </View>
             <View style={styles.row}>

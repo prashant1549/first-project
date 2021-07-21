@@ -7,13 +7,44 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import CalendarTodo from "./CalendarTodo";
+import moment from "moment";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function ModalPage({ modalVisible, callBack, onSubmit }) {
   const [title, setTitle] = useState("");
+  const [dateVisible, setDateVisible] = useState(false);
+  const [timeVisible, setTimeVisible] = useState(false);
+  const [saveDate, setSaveDate] = useState({});
+  const [time, setTime] = useState(new Date());
+  const [selectTime, setSelectTime] = useState("Select Time");
+  const [selectDate, setSelectDate] = useState("Select Date");
 
-  const submitTodo = () => {
-    onSubmit(title);
+  const closeButton = () => {
+    callBack();
+    setSelectDate("Select Date");
     setTitle("");
+  };
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || time;
+    setTimeVisible(false);
+    setTime(moment(currentDate).format("LT"));
+    setSelectTime("Select Time");
+  };
+  const submitTodo = () => {
+    onSubmit(title, saveDate, time);
+    setTitle("");
+    setSelectDate("Select Date");
+    setSaveDate({});
+    setTime(new Date());
+  };
+  const handleDate = () => {
+    setDateVisible(true);
+  };
+  const handleSelectDate = (day) => {
+    setSaveDate(day);
+    setSelectDate(day.dateString);
+    setDateVisible(false);
   };
   return (
     <View style={styles.centeredView}>
@@ -40,10 +71,28 @@ export default function ModalPage({ modalVisible, callBack, onSubmit }) {
               />
             </View>
             <View style={styles.row}>
+              <View style={styles.datestyle}>
+                <TouchableOpacity
+                  style={styles.selectDate}
+                  onPress={handleDate}
+                >
+                  <Text style={{ textAlign: "center" }}>{selectDate}</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.datestyle}>
+                <TouchableOpacity
+                  style={styles.selectDate}
+                  onPress={() => setTimeVisible(true)}
+                >
+                  <Text style={{ textAlign: "center" }}>{selectTime}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.row}>
               <View style={{ flex: 1 }}>
                 <TouchableOpacity
                   style={[styles.button, styles.buttonClose]}
-                  onPress={() => callBack()}
+                  onPress={closeButton}
                 >
                   <Text style={styles.textStyle}>Cancel</Text>
                 </TouchableOpacity>
@@ -59,6 +108,36 @@ export default function ModalPage({ modalVisible, callBack, onSubmit }) {
             </View>
           </View>
         </View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={dateVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          callBack();
+        }}
+      >
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <CalendarTodo onDate={handleSelectDate} />
+        </View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={timeVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          callBack();
+        }}
+      >
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={time}
+          mode="time"
+          display="default"
+          onChange={onChange}
+        />
       </Modal>
     </View>
   );
@@ -79,7 +158,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 10,
     width: 300,
-    height: 300,
+    height: 350,
     borderColor: "#EBEFF5",
     borderWidth: 1,
   },
@@ -112,5 +191,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#EBEFF5",
     borderRadius: 10,
+  },
+  selectDate: {
+    backgroundColor: "lightblue",
+    width: 120,
+    height: 35,
+    borderRadius: 10,
+    justifyContent: "center",
+    marginHorizontal: 20,
+    marginTop: -20,
+  },
+  datestyle: {
+    flex: 1,
+    alignItems: "flex-end",
+    marginVertical: 20,
   },
 });

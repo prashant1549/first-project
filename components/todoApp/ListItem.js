@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import Rectangle from "../../assets/Rectangle.png";
-import List from "../../assets/List.png";
 
 export default function ListItem({ item }) {
   return (
@@ -25,6 +24,11 @@ export default function ListItem({ item }) {
         </View>
       </View>
       <View style={{ alignItems: "flex-end" }}>
+        <Text
+          style={{ fontWeight: "bold", color: "gray", marginHorizontal: 25 }}
+        >
+          {item.date} {item.time}
+        </Text>
         <Image source={Rectangle} style={{ width: 280 }}></Image>
       </View>
     </View>

@@ -9,41 +9,41 @@ import {
 } from "react-native";
 import CalendarTodo from "./CalendarTodo";
 import moment from "moment";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-export default function ModalPage({ modalVisible, callBack, onSubmit }) {
-  const [title, setTitle] = useState("");
+export default function ModalPage({
+  modalVisible,
+  callBack,
+  onSubmit,
+  editIndex,
+  onChnage,
+  title,
+  selectDate,
+  selectTime,
+  handleTime,
+  handleDate,
+}) {
   const [dateVisible, setDateVisible] = useState(false);
   const [timeVisible, setTimeVisible] = useState(false);
-  const [saveDate, setSaveDate] = useState({});
-  const [time, setTime] = useState(new Date());
-  const [selectTime, setSelectTime] = useState("Select Time");
-  const [selectDate, setSelectDate] = useState("Select Date");
 
   const closeButton = () => {
     callBack();
-    setSelectDate("Select Date");
-    setTitle("");
   };
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || time;
+  const handleConfirm = (selectedDate) => {
+    handleTime(moment(selectedDate).format("LT"));
+    hideDatePicker();
+  };
+  const hideDatePicker = () => {
     setTimeVisible(false);
-    setTime(moment(currentDate).format("LT"));
-    setSelectTime("Select Time");
   };
   const submitTodo = () => {
-    onSubmit(title, saveDate, time);
-    setTitle("");
-    setSelectDate("Select Date");
-    setSaveDate({});
-    setTime(new Date());
+    onSubmit();
   };
-  const handleDate = () => {
+  const handleDate1 = () => {
     setDateVisible(true);
   };
   const handleSelectDate = (day) => {
-    setSaveDate(day);
-    setSelectDate(day.dateString);
+    handleDate(day);
     setDateVisible(false);
   };
   return (
@@ -59,12 +59,14 @@ export default function ModalPage({ modalVisible, callBack, onSubmit }) {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Add ToDo</Text>
+            <Text style={styles.modalText}>
+              {editIndex > -1 ? "Update ToDo" : "Add ToDo"}
+            </Text>
 
             <View>
               <TextInput
                 style={styles.input}
-                onChangeText={(value) => setTitle(value)}
+                onChangeText={(value) => onChnage(value)}
                 value={title}
                 numberOfLines={10}
                 multiline={true}
@@ -74,7 +76,7 @@ export default function ModalPage({ modalVisible, callBack, onSubmit }) {
               <View style={styles.datestyle}>
                 <TouchableOpacity
                   style={styles.selectDate}
-                  onPress={handleDate}
+                  onPress={handleDate1}
                 >
                   <Text style={{ textAlign: "center" }}>{selectDate}</Text>
                 </TouchableOpacity>
@@ -122,23 +124,12 @@ export default function ModalPage({ modalVisible, callBack, onSubmit }) {
           <CalendarTodo onDate={handleSelectDate} />
         </View>
       </Modal>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={timeVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          callBack();
-        }}
-      >
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={time}
-          mode="time"
-          display="default"
-          onChange={onChange}
-        />
-      </Modal>
+      <DateTimePickerModal
+        isVisible={timeVisible}
+        mode="time"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+      />
     </View>
   );
 }

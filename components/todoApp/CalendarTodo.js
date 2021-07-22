@@ -1,12 +1,15 @@
 import React from "react";
 import { Text, View } from "react-native";
 import { Calendar } from "react-native-calendars";
+import moment from "moment";
 
 export default function CalendarTodo({ onDate }) {
+  const currentDate = moment(new Date()).format("yyyy-MM-DD");
+
   return (
     <Calendar
-      current={"2021-07-21"}
-      minDate={"2021-07-21"}
+      current={currentDate}
+      minDate={currentDate}
       onDayPress={(day) => {
         return onDate(day);
       }}

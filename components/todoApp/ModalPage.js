@@ -49,6 +49,7 @@ export default function ModalPage({
   return (
     <View style={styles.centeredView}>
       <Modal
+        style={{ backgroundColor: "#81ff69" }}
         animationType="slide"
         transparent={true}
         visible={modalVisible}
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   modalView: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#81ff69",
     borderRadius: 10,
     width: 300,
     height: 350,
@@ -182,6 +183,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#EBEFF5",
     borderRadius: 10,
+    backgroundColor: "#FFFFFF",
   },
   selectDate: {
     backgroundColor: "lightblue",

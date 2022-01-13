@@ -46,7 +46,9 @@ export default function ListItem({
           <Text
             style={{ fontWeight: "bold", color: "gray", textAlign: "center" }}
           >
-            {timeCalculation <= 0
+            {!timeCalculation
+              ? ""
+              : timeCalculation <= 0
               ? "Time Over"
               : timeCalculation > 0 && timeCalculation < 60
               ? timeCalculation + " min left"
@@ -59,7 +61,11 @@ export default function ListItem({
           <Text
             style={{
               backgroundColor:
-                timeCalculation > 0 && timeCalculation < 60
+                item.isSelected === true
+                  ? "gray"
+                  : timeCalculation <= 0
+                  ? "red"
+                  : timeCalculation > 0 && timeCalculation < 60
                   ? "red"
                   : timeInHours > 0 && timeInHours <= 24
                   ? "yellow"
